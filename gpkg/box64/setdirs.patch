@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 2bfc2a5..b077021 100644
+index 8640994..4791f93 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -1241,11 +1241,11 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -1273,11 +1273,11 @@ if(NOT _x86 AND NOT _x86_64)
    if(NOT NO_CONF_INSTALL)
      configure_file(system/box64.conf.cmake system/box64.conf)
  	  if(NOT TERMUX)
@@ -17,7 +17,7 @@ index 2bfc2a5..b077021 100644
          endif()
        else()
          install(FILES ${CMAKE_BINARY_DIR}/system/box64.conf DESTINATION ${TERMUX_PATH}/usr/etc/binfmt.d/)
-@@ -1257,7 +1257,7 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -1289,7 +1289,7 @@ if(NOT _x86 AND NOT _x86_64)
  	  endif()
  
    endif()
@@ -26,7 +26,7 @@ index 2bfc2a5..b077021 100644
    if(NOT NO_LIB_INSTALL)
  	if(NOT TERMUX AND NOT ANDROID)
          install(FILES ${CMAKE_SOURCE_DIR}/x64lib/libstdc++.so.5 DESTINATION ${INSTALL_PATH})
-@@ -1296,7 +1296,7 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -1328,7 +1328,7 @@ if(NOT _x86 AND NOT _x86_64)
  	endif()
     endif()
     if(BOX32)
@@ -36,10 +36,10 @@ index 2bfc2a5..b077021 100644
      	if(NOT TERMUX AND NOT ANDROID)
      		install(FILES ${CMAKE_SOURCE_DIR}/x86lib/libstdc++.so.5 DESTINATION ${INSTALL_PATH})
 diff --git a/src/core.c b/src/core.c
-index 5e164c7..04dddd7 100644
+index f98d305..649373b 100644
 --- a/src/core.c
 +++ b/src/core.c
-@@ -940,7 +940,7 @@ int initialize(int argc, const char **argv, char** env, x64emu_t** emulator, elf
+@@ -752,7 +752,7 @@ int initialize(int argc, const char **argv, char** env, x64emu_t** emulator, elf
          printf("See 'box64 --help' for more information.\n");
          exit(0);
      }
