@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 4d0c8a9..cd0cb20 100755
+index 8c07e38..61be370 100755
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -801,14 +801,14 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -802,14 +802,14 @@ if(NOT _x86 AND NOT _x86_64)
    if(NOT NO_CONF_INSTALL)
      configure_file(system/box86.conf.cmake system/box86.conf)
      	if(NOT TERMUX)
@@ -21,7 +21,7 @@ index 4d0c8a9..cd0cb20 100755
      if(NOT TERMUX)
      	install(FILES ${CMAKE_SOURCE_DIR}/x86lib/libstdc++.so.6 DESTINATION ${INSTALL_PATH})
 diff --git a/src/main.c b/src/main.c
-index f7da5c6..a242d1f 100644
+index bc1aff9..5e77a6b 100644
 --- a/src/main.c
 +++ b/src/main.c
 @@ -981,24 +981,16 @@ void LoadEnvVars(box86context_t *context)
@@ -123,7 +123,7 @@ index 7b13da1..0ed698f 100644
  typedef void* (*pFp_t)(void*);
  
 diff --git a/src/wrapped/wrappedlibc.c b/src/wrapped/wrappedlibc.c
-index f27d3ba..7fd250d 100755
+index e4b9dbc..7ac0b52 100755
 --- a/src/wrapped/wrappedlibc.c
 +++ b/src/wrapped/wrappedlibc.c
 @@ -2707,7 +2707,7 @@ EXPORT void* my_getpwuid(x86emu_t* emu, uint32_t uid)
