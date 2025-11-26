@@ -39,7 +39,7 @@ diff --git a/src/core.c b/src/core.c
 index ce20cb8..2f3fba5 100644
 --- a/src/core.c
 +++ b/src/core.c
-@@ -730,7 +730,7 @@ int initialize(int argc, const char **argv, char** env, x64emu_t** emulator, elf
+@@ -734,7 +734,7 @@ int initialize(int argc, const char **argv, char** env, x64emu_t** emulator, elf
          printf("See 'box64 --help' for more information.\n");
          exit(0);
      }
