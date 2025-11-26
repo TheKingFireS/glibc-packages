@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 52366a6..d0d51ca 100644
+index 2715f60..705cf94 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -1267,11 +1267,11 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -1297,11 +1297,11 @@ if(NOT _x86 AND NOT _x86_64)
    if(NOT NO_CONF_INSTALL)
      configure_file(system/box64.conf.cmake system/box64.conf)
  	  if(NOT TERMUX)
@@ -17,7 +17,7 @@ index 52366a6..d0d51ca 100644
          endif()
        else()
          install(FILES ${CMAKE_BINARY_DIR}/system/box64.conf DESTINATION ${TERMUX_PATH}/usr/etc/binfmt.d/)
-@@ -1283,7 +1283,7 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -1313,7 +1313,7 @@ if(NOT _x86 AND NOT _x86_64)
  	  endif()
  
    endif()
@@ -26,7 +26,7 @@ index 52366a6..d0d51ca 100644
    if(NOT NO_LIB_INSTALL)
  	if(NOT TERMUX AND NOT ANDROID)
          install(FILES ${CMAKE_SOURCE_DIR}/x64lib/libstdc++.so.5 DESTINATION ${INSTALL_PATH})
-@@ -1322,7 +1322,7 @@ if(NOT _x86 AND NOT _x86_64)
+@@ -1352,7 +1352,7 @@ if(NOT _x86 AND NOT _x86_64)
  	endif()
     endif()
     if(BOX32)
@@ -36,10 +36,10 @@ index 52366a6..d0d51ca 100644
      	if(NOT TERMUX AND NOT ANDROID)
      		install(FILES ${CMAKE_SOURCE_DIR}/x86lib/libstdc++.so.5 DESTINATION ${INSTALL_PATH})
 diff --git a/src/core.c b/src/core.c
-index 6025f62..f426d85 100644
+index ce20cb8..2f3fba5 100644
 --- a/src/core.c
 +++ b/src/core.c
-@@ -725,7 +725,7 @@ int initialize(int argc, const char **argv, char** env, x64emu_t** emulator, elf
+@@ -730,7 +730,7 @@ int initialize(int argc, const char **argv, char** env, x64emu_t** emulator, elf
          printf("See 'box64 --help' for more information.\n");
          exit(0);
      }
@@ -47,12 +47,12 @@ index 6025f62..f426d85 100644
 +    if(argc>1 && !strcmp(argv[1], "@TERMUX_PREFIX@/bin/gdb") && BOX64ENV(trace_file))
          exit(0);
      // uname -m is redirected to box64 -m
-     if(argc==2 && (!strcmp(argv[1], "-m") || !strcmp(argv[1], "-p") || !strcmp(argv[1], "-i")))
+     if (argc == 2 && (!strcmp(argv[1], "-m") || !strcmp(argv[1], "-p") || !strcmp(argv[1], "-i"))) {
 diff --git a/src/steam.c b/src/steam.c
-index 289f709..6f12f4f 100644
+index b1329a0..ca55bde 100644
 --- a/src/steam.c
 +++ b/src/steam.c
-@@ -39,13 +39,13 @@ void pressure_vessel(int argc, const char** argv, int nextarg, const char* prog)
+@@ -88,13 +88,13 @@ void pressure_vessel(int argc, const char** argv, int nextarg, const char* prog)
                  if(is_usr) {
                      // transform RESSURE_VESSEL_APP_LD_LIBRARY_PATH to BOX86_ / BOX64_ LD_LIBRARY_PATH
                      char tmp[strlen(argv[nextarg])+150];
@@ -68,35 +68,33 @@ index 289f709..6f12f4f 100644
                      strcat(tmp, argv[nextarg]+strlen("--env-if-host=STEAM_RUNTIME_LIBRARY_PATH="));
                      p = strchr(tmp, '=');
                      *p ='\0'; ++p;
-@@ -93,14 +93,8 @@ void pressure_vessel(int argc, const char** argv, int nextarg, const char* prog)
-         strcat(sniper, "/files");  // this is the sniper root
-         // do LD_LIBRARY_PATH
-         {
--            const char* usrsbinldconfig = "/usr/sbin/ldconfig";
--            const char* sbinldconfig = "/sbin/ldconfig";
-             const char* ldconfig = "ldconfig";
-             const char* ldcmd = ldconfig;
--            if(FileExist(usrsbinldconfig, IS_FILE))
--                ldcmd = usrsbinldconfig;
--            else if(FileExist(sbinldconfig, IS_FILE))
--                ldcmd = sbinldconfig;
-             char tmp[MAX_PATH*5] = {0};
-             // prepare folders, using ldconfig
-             snprintf(tmp, sizeof(tmp), "%s -i -n %s/lib/x86_64-linux-gnu", ldcmd, sniper);
+@@ -204,8 +204,8 @@ void pressure_vessel(int argc, const char** argv, int nextarg, const char* prog)
+                 strncat(tmp, tmp2, sizeof(tmp)-1);  \
+                 strncat(tmp, ":", sizeof(tmp)-1);   \
+             }
+-            GO("/usr/lib/%s-x86_64-linux-gnu", "box64")
+-            GO("/usr/lib/%s-i386-linux-gnu/", "box64")
++            GO("@TERMUX_PREFIX@/lib/%s-x86_64-linux-gnu", "box64")
++            GO("@TERMUX_PREFIX@/lib/%s-i386-linux-gnu/", "box64")
+             GO("%s/lib/x86_64-linux-gnu", sniper)
+             GO("%s/lib/i386-linux-gnu", sniper)
+             GO("%s/lib/x86_64-linux-gnu/openblas", sniper)
 diff --git a/src/tools/fileutils.c b/src/tools/fileutils.c
-index cfadf3c..50ac3a7 100644
+index d043bf4..7b8e7d4 100644
 --- a/src/tools/fileutils.c
 +++ b/src/tools/fileutils.c
-@@ -17,9 +17,9 @@
+@@ -17,10 +17,10 @@
  
  static const char* x86lib  = "\x7f" "ELF" "\x01" "\x01" "\x01" "\x03" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x02" "\x00" "\x03" "\x00";
  static const char* x64lib  = "\x7f" "ELF" "\x02" "\x01" "\x01" "\x03" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x02" "\x00" "\x3e" "\x00";
 -static const char* bashsign= "#!/bin/bash";
 -static const char* shsign  = "#!/bin/sh";
 -static const char* bashsign2="#!/usr/bin/env bash";
+-static const char* pythonsign="#!/usr/bin/env python3";
 +static const char* bashsign= "#!@TERMUX_PREFIX@/bin/bash";
 +static const char* shsign  = "#!@TERMUX_PREFIX@/bin/sh";
 +static const char* bashsign2="#!@TERMUX_PREFIX@/bin/env bash";
++static const char* pythonsign="#!@TERMUX_PREFIX@/bin/env python3";
  
  static char* ResolvePathInner(const char* path, int resolve_symlink) {
      if (resolve_symlink) {
@@ -114,10 +112,10 @@ index de962ee..67a786f 100644
  typedef void* (*pFp_t)(void*);
  
 diff --git a/src/wrapped/wrappedlibdl.c b/src/wrapped/wrappedlibdl.c
-index 6f92a0b..4482c5e 100644
+index 545c14d..296951c 100644
 --- a/src/wrapped/wrappedlibdl.c
 +++ b/src/wrapped/wrappedlibdl.c
-@@ -139,7 +139,7 @@ void* my_dlopen(x64emu_t* emu, void *filename, int flag)
+@@ -140,7 +140,7 @@ void* my_dlopen(x64emu_t* emu, void *filename, int flag)
              if(sys)
                  return sys;
          }
