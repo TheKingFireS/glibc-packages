@@ -8,7 +8,7 @@ TERMUX_PKG_SHA256=9c1cd84f4406bffda861a46a276a5dca7b22664382305d77c599abd2292d10
 TERMUX_PKG_DEPENDS="gcc-libs-glibc"
 TERMUX_PKG_EXCLUDED_ARCHES="arm, i686"
 TERMUX_CMAKE_BUILD="Unix Makefiles"
-TERMUX_PKG_EXTRA_CONFIGURE_ARGS="-DCMAKE_BUILD_TYPE=RelWithDebInfo -DBOX32=ON -DBOX32_BINFMT=ON -DBAD_SIGNAL=ON -DNOGIT=1"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="-G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBOX32=ON -DBOX32_BINFMT=ON -DBAD_SIGNAL=ON -DNOGIT=1"
 
 termux_step_pre_configure() {
 	if [ "${TERMUX_ARCH}" = "aarch64" ]; then
@@ -20,7 +20,7 @@ termux_step_pre_configure() {
 
 termux_step_make_install() {
 	if [ "${TERMUX_ARCH}" = "aarch64" ]; then
-		make install
+		ninja install
 	elif [ "${TERMUX_ARCH}" = "x86_64" ]; then
 		install -Dm755 box64 -t ${TERMUX_PREFIX}/bin/
 	fi
